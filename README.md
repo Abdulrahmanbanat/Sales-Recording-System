@@ -23,7 +23,3 @@ A console-based Sales Recording and Management System built in C++ as part of a 
 - **IDE:** Dev-C++
 - **Interface:** Command-Line Interface (CLI)
 - **Data Storage:** Arrays (no database)
-
-## 📁 Project Structure
-
-# Sales-Recording-System
