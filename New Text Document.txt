@@ -1,0 +1,269 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct User {
+    string username;  
+    string password; 
+    int loginCount;     
+    int logoutCount;   
+    string notifications[5];
+    int countNotification;
+    string clientNames[5];
+    string contactDetails[5]; 
+    string dealResults[5]; 
+    int dealCount;
+
+
+    User(string u, string p) {
+        username = u;
+        password = p;
+        loginCount = 0;  
+        logoutCount = 0;  
+        countNotification = 0;
+        dealCount = 0;
+    }
+
+    
+    void addNotification(string message) {
+        if (countNotification < 5) {
+            notifications[countNotification] = message;
+            countNotification++;
+        } else {
+            cout << "Can't add more notifications; limit reached.\n";
+        }
+    }
+
+    
+    void addDeal(string client, string contact, string result) {
+        if (dealCount < 5) {
+            clientNames[dealCount] = client;
+            contactDetails[dealCount] = contact;
+            dealResults[dealCount] = result;
+            dealCount++;
+        } else {
+            cout << "Maximum deal limit reached. Can't add more deals!\n";
+        }
+    }
+};
+
+
+User users[3] = {
+    User("admin", "admin"),
+    User("ali", "123"),
+    User("ahmad", "123")
+};
+
+
+bool findUser(string username, int &uIndex) {
+    for (int i = 0; i < 3; i++) {
+        if (users[i].username == username) {
+            uIndex = i;
+            return true;
+        }
+    }
+    return false;
+}
+
+
+bool login(User &user, string Pass) {
+    if (user.password == Pass) {
+        user.loginCount++;
+        cout << "Welcome, " << user.username << "! You've logged in successfully.\n";
+        return true;
+    } else {
+        
+        return false;
+    }
+}
+
+
+void logout(User &user) {
+    user.logoutCount++;
+    cout << user.username << " has logged out. See you next time!\n";
+}
+
+
+int adminMenu() {
+    cout << "\nAdmin Menu:\n";
+    cout << "1. Show User Data\n";
+    cout << "2. Logout\n";
+    cout << "3. Exit Program\n";
+    cout << "Enter your choice: ";
+    int choice;
+    cin >> choice;
+    return choice;
+}
+
+
+int employeeMenu() {
+    cout << "\nEmployee Menu:\n";
+    cout << "1. Show Notifications\n";
+    cout << "2. Add Contact\n";
+    cout << "3. Logout\n";
+    cout << "4. Exit Program\n";
+    cout << "Enter your choice: ";
+    int choice;
+    cin >> choice;
+    return choice;
+}
+
+
+void handleAdminActions(int userIndex) {
+    int choice;
+    do {
+        choice = adminMenu();
+        if (choice == 1) {
+            cout << "Usernames:\n";
+            for (int i = 0; i < 3; i++) {
+                cout << "- " << users[i].username << "\n";
+            }
+
+            string selectedUsername;
+            cout << "Enter username to view data: ";
+            cin >> selectedUsername;
+            cout<<endl;
+            
+            int Index = -1;
+            if (findUser(selectedUsername, Index)) {
+                if (users[Index].username != "admin") {
+                    cout << "\nUser Information for " << users[Index].username << ":\n";
+                    cout << "Login count: " << users[Index].loginCount << "\n";
+                    cout << "Logout count: " << users[Index].logoutCount << "\n";
+
+                    string message;
+                    cout << "Enter a message to send to " << users[Index].username << ": ";
+                    cin >> message; 
+                    users[Index].addNotification(message);
+                    cout << "Notification sent!\n";
+                } else {
+                    cout << "Can't send a notification to admin!\n";
+                }
+            } else {
+                cout << "User not found. Try again.\n";
+            }
+        } else if (choice == 2) {
+            cout << "Logging out as admin.\n";
+            return;
+        } else if (choice == 3) {
+            cout << "Exiting program. \n";
+            exit(0);
+        } else {
+            cout << "Invalid choice. Please select 1, 2, or 3.\n";
+        }
+    } while (choice != 3);
+}
+
+
+void handleEmployeeActions(int userIndex) {
+    int choice;
+    do {
+        choice = employeeMenu();
+        if (choice == 1) {
+            cout << "\nNotifications:\n";
+            if (users[userIndex].countNotification == 0) {
+                cout << "No notifications available right now.\n";
+            } else {
+                for (int i = 0; i < users[userIndex].countNotification; i++) {
+                    cout << "- " << users[userIndex].notifications[i] << "\n";
+                    cout<<endl;
+                }
+            }
+        } else if (choice == 2) {
+            if (users[userIndex].dealCount < 5) {
+                string clientName, contactDetail, dealResult;
+                cout << "Enter client name: ";
+                cin >> clientName; 
+                cout << "Enter contact details: ";
+                cin >> contactDetail; 
+                cout << "Enter deal result: ";
+                cin >> dealResult; 
+                users[userIndex].addDeal(clientName, contactDetail, dealResult);
+                cout << "Deal added successfully!\n";
+                
+            } else {
+                cout << "You can't add more deals; maximum limit reached.\n";
+            }
+        } else if (choice == 3) {
+            cout << "Logging out.\n";
+            logout(users[userIndex]);
+            return;
+        } else if (choice == 4) {
+            cout << "Exiting program. \n";
+            exit(0);
+        } else {
+            cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 4);
+}
+
+int main() {
+string username, Pass;
+    bool loggedIn = false;
+    int uIndex = -1;
+
+    do {
+        int attempt = 3; 
+        loggedIn = false;
+
+        while (attempt > 0 && !loggedIn) {
+        	
+        
+            cout << "Enter username: ";
+            cin >> username;
+            cout << "Enter password: ";
+            cin >> Pass;
+            
+            cout <<"----------------------------------------------------------------"<<endl;
+            
+            if (findUser(username, uIndex)) {
+                loggedIn = login(users[uIndex], Pass);
+                if (!loggedIn) {
+                    attempt--;
+                    if (attempt > 0) {
+                        char retry;
+                        cout << "Login failed! Do you want to try again? (Y/N): ";
+                        cin >> retry;
+                        cout<<endl;
+                    
+                        if (retry == 'N' || retry == 'n') {
+                            cout << "Program terminated.\n";
+                            return 0;
+                        }
+                    }
+                }
+            } else {
+               
+                attempt--;
+                if (attempt > 0) {
+                    char retry;
+                    cout << "Login failed! Do you want to try again? (Y/N): ";
+                    cin >> retry;
+                    cout<<endl;
+                 
+                    if (retry == 'N' || retry == 'n') {
+                        cout << "Program terminated.\n";
+                        return 0; 
+                    }
+                }
+            }
+
+            if (attempt == 0 && !loggedIn) {
+                cout << "Maximum login attempts reached. Program terminated.\n";
+            }
+        }
+
+        if (loggedIn) {
+            if (username == "admin") {
+                handleAdminActions(uIndex);
+                cout<<endl;
+            } else {
+                handleEmployeeActions(uIndex);
+                cout<<endl;
+            }
+        }
+
+    } while (true);
+
+    return 0;
+}
