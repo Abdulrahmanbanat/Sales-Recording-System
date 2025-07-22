@@ -1,8 +1,8 @@
-# Sales Recording System (C++) 🚀
+# Sales Recording System (C++) 
 
-A console-based Sales Recording and Management System built in C++ as part of a course graduation project. The system supports both admin and employee functionalities and aims to help companies track their sales records and employee activities efficiently.
+A console-based Sales Recording and Management System built in C++. The system supports both admin and employee functionalities and aims to help companies track their sales records and employee activities efficiently.
 
-## 📌 Features
+##  Features
 
 ### Admin Panel:
 - Login with username/password (3 attempts max)
