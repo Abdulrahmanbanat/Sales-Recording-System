@@ -17,7 +17,7 @@ A console-based Sales Recording and Management System built in C++. The system s
 - Add new sales deal (client name, details, result)
 - Log out and return to login screen
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **Language:** C++
 - **IDE:** Dev-C++
